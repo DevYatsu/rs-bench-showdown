@@ -260,34 +260,16 @@ fn profile_memory() {
 fn compare_shared_state(c: &mut Criterion) {
     profile_memory();
 
-    // ── Read-Only ──
-    // Light: 1 read/thread. Measures setup overhead (clone, spawn, ref passing)
-    let mut g = c.benchmark_group("1. Read-Only (1 read/thread)");
-    g.bench_function("Arc<T>", |b| b.iter(|| arc_read(NUM_THREADS, 1)));
-    g.bench_function("LazyLock<T>", |b| b.iter(|| lazy_read(NUM_THREADS, 1)));
-    g.bench_function("Box::leak", |b| b.iter(|| leak_read(NUM_THREADS, 1)));
-    g.bench_function("thread::scope", |b| b.iter(|| scope_read(NUM_THREADS, 1)));
-    g.finish();
-
-    // Heavy: 1000 reads/thread. Per-access overhead amortized
-    let mut g = c.benchmark_group("2. Read-Only (1000 reads/thread)");
+    // ── Read-Only: 1000 reads/thread ──
+    let mut g = c.benchmark_group("1. Read-Only (1000 reads/thread)");
     g.bench_function("Arc<T>", |b| b.iter(|| arc_read(NUM_THREADS, 1000)));
     g.bench_function("LazyLock<T>", |b| b.iter(|| lazy_read(NUM_THREADS, 1000)));
     g.bench_function("Box::leak", |b| b.iter(|| leak_read(NUM_THREADS, 1000)));
     g.bench_function("thread::scope", |b| b.iter(|| scope_read(NUM_THREADS, 1000)));
     g.finish();
 
-    // ── Read+Write ──
-    // Light: 1 write/thread. Setup overhead + lock acquire
-    let mut g = c.benchmark_group("3. Read+Write (1 write/thread)");
-    g.bench_function("Arc<Mutex<T>>", |b| b.iter(|| arc_write(NUM_THREADS, 1)));
-    g.bench_function("LazyLock<Mutex<T>>", |b| b.iter(|| lazy_write(NUM_THREADS, 1)));
-    g.bench_function("Box::leak", |b| b.iter(|| leak_write(NUM_THREADS, 1)));
-    g.bench_function("thread::scope", |b| b.iter(|| scope_write(NUM_THREADS, 1)));
-    g.finish();
-
-    // Heavy: 1000 writes/thread. Mutex contention dominates
-    let mut g = c.benchmark_group("4. Read+Write (1000 writes/thread)");
+    // ── Read+Write: 1000 writes/thread ──
+    let mut g = c.benchmark_group("2. Read+Write (1000 writes/thread)");
     g.bench_function("Arc<Mutex<T>>", |b| b.iter(|| arc_write(NUM_THREADS, 1000)));
     g.bench_function("LazyLock<Mutex<T>>", |b| b.iter(|| lazy_write(NUM_THREADS, 1000)));
     g.bench_function("Box::leak", |b| b.iter(|| leak_write(NUM_THREADS, 1000)));

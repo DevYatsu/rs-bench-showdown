@@ -9,18 +9,22 @@ stats_alloc = "0.1.10"
 
 [[bench]]
 name = "thread_signaling"
+path = "benches/thread_signaling/main.rs"
 harness = false
 
 [[bench]]
 name = "work_distribution"
+path = "benches/work_distribution/main.rs"
 harness = false
 
 [[bench]]
 name = "shared_state"
+path = "benches/shared_state/main.rs"
 harness = false
 
 [[bench]]
 name = "locking_granularity"
+path = "benches/locking_granularity/main.rs"
 harness = false
 
 [dependencies]
