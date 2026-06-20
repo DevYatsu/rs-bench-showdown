@@ -36,7 +36,7 @@ fn uniform_rayon_impl(data: &mut [i32]) {
 
 #[inline(never)]
 fn heavy_computation(index: usize, val: i32) -> i32 {
-    // If the index is a multiple of 7, simulate a massive branch bottleneck
+    // Every 7th index gets a 50-iteration loop — creates load imbalance
     if index % 7 == 0 {
         let mut temp = val;
         for i in 0..50 {
@@ -52,7 +52,7 @@ fn non_uniform_base_impl(data: &mut [i32], num_threads: usize) {
     let chunk_size = (data.len() + num_threads - 1) / num_threads;
 
     thread::scope(|s| {
-        // Enumerate chunks to deduce structural global indices inside threads
+        // Map chunk index back to global element index
         for (chunk_idx, chunk) in data.chunks_mut(chunk_size).enumerate() {
             s.spawn(move || {
                 let start_idx = chunk_idx * chunk_size;
@@ -65,7 +65,7 @@ fn non_uniform_base_impl(data: &mut [i32], num_threads: usize) {
 }
 
 fn non_uniform_rayon_impl(data: &mut [i32]) {
-    // Rayon provides .par_iter_mut().enumerate() out-of-the-box
+    // .enumerate() works directly on Rayon's parallel iterators
     data.par_iter_mut().enumerate().for_each(|(index, item)| {
         *item = heavy_computation(index, *item);
     });

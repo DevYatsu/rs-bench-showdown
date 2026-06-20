@@ -99,7 +99,7 @@ fn scope_read(threads: usize, reads: usize) {
 
 // ═══════════════════════════════════════════════════════════════════════
 // READ+WRITE BENCHMARKS (with Mutex — share &Mutex<T>)
-// Difference: same reference-passing overhead AS ABOVE, plus contention
+// Same as read-only, but now with lock contention added
 // ═══════════════════════════════════════════════════════════════════════
 
 // ── 1. Arc<Mutex<T>> ──

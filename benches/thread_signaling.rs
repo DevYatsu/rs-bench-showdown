@@ -58,7 +58,7 @@ fn bench_parking() {
 }
 
 // --- PROFILE MEMORY FUNCTION ---
-// Runs each function exactly once in a pristine allocation region to print heap metrics
+// Run each strategy once in a clean allocation region, print heap metrics
 fn profile_memory() {
     println!("\n==================================================");
     println!("          HEAP ALLOCATION PROFILING               ");
@@ -98,7 +98,7 @@ fn profile_memory() {
 
 // --- CRITERION ORCHESTRATION ---
 fn compare_signaling(c: &mut Criterion) {
-    // Run the pure heap profile calculation right before or after Criterion execution
+    // Profile allocation stats first, then benchmark timing
     profile_memory();
 
     let mut group = c.benchmark_group("Thread Signaling");
