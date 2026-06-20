@@ -1,0 +1,27 @@
+[package]
+name = "rs_bench_showdown"
+version = "0.1.0"
+edition = "2024"
+
+[dev-dependencies]
+criterion = { version = "0.8.2", features = ["html_reports"] }
+stats_alloc = "0.1.10"
+
+[[bench]]
+name = "thread_signaling"
+harness = false
+
+[[bench]]
+name = "work_distribution"
+harness = false
+
+[[bench]]
+name = "shared_state"
+harness = false
+
+[[bench]]
+name = "locking_granularity"
+harness = false
+
+[dependencies]
+rayon = "1.12.0"
