@@ -22,31 +22,55 @@ Compare locking strategies for multi-field struct access across threads. Each be
 
 ### Hot Field
 
-| Approach | Time |
-|---|---|
-| Coarse (1 Mutex) | 77.582 — 78.241 µs |
-| Fine (3 Mutexes) | 80.867 — 97.139 µs |
-| Atomic | 43.371 — 47.447 µs |
+```
+1. Hot Field/Coarse (1 Mutex)
+  time:   [77.582 µs 77.923 µs 78.241 µs]
+  allocs: 712 bytes / 15 allocs
+
+1. Hot Field/Fine (3 Mutexes)
+  time:   [80.867 µs 87.608 µs 97.139 µs]
+  allocs: 736 bytes / 15 allocs
+
+1. Hot Field/Atomic
+  time:   [43.371 µs 45.375 µs 47.447 µs]
+  allocs: 640 bytes / 14 allocs
+```
 
 Atomic ~1.7x faster. All threads hit the same field — coarse and fine face the same contention, so they tie. CAS beats locking.
 
 ### Scattered
 
-| Approach | Time |
-|---|---|
-| Coarse (1 Mutex) | 85.225 — 89.724 µs |
-| Fine (3 Mutexes) | 89.395 — 91.199 µs |
-| Atomic | 52.232 — 54.744 µs |
+```
+2. Scattered/Coarse (1 Mutex)
+  time:   [85.225 µs 87.053 µs 89.724 µs]
+  allocs: 712 bytes / 15 allocs
+
+2. Scattered/Fine (3 Mutexes)
+  time:   [89.395 µs 90.213 µs 91.199 µs]
+  allocs: 736 bytes / 15 allocs
+
+2. Scattered/Atomic
+  time:   [52.232 µs 53.357 µs 54.744 µs]
+  allocs: 640 bytes / 14 allocs
+```
 
 Atomic ~1.6x faster. Coarse serializes all threads even though they want different fields — worst-case for coarse.
 
 ### All Fields
 
-| Approach | Time |
-|---|---|
-| Coarse (1 Mutex) | 88.295 — 89.178 µs |
-| Fine (3 Mutexes) | 199.49 — 202.97 µs |
-| Atomic | 59.927 — 60.864 µs |
+```
+3. All Fields/Coarse (1 Mutex)
+  time:   [88.295 µs 88.712 µs 89.178 µs]
+  allocs: 712 bytes / 15 allocs
+
+3. All Fields/Fine (3 Mutexes)
+  time:   [199.49 µs 201.15 µs 202.97 µs]
+  allocs: 736 bytes / 15 allocs
+
+3. All Fields/Atomic
+  time:   [59.927 µs 60.384 µs 60.864 µs]
+  allocs: 640 bytes / 14 allocs
+```
 
 Coarse locks once and does three writes — ~2.2x faster than Fine's 3 lock/unlock cycles. Atomic fastest with 3 independent CAS ops.
 

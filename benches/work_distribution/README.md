@@ -21,15 +21,19 @@ Manual `thread::scope` with static chunking vs Rayon work-stealing, on two workl
 ```
 1. Uniform Workload/Base Scope Chunks
   time:   [1.5054 ms 1.5897 ms 1.6763 ms]
+  allocs: 552 bytes / 13 allocs
 
 1. Uniform Workload/Rayon par_iter
   time:   [2.9972 ms 3.4299 ms 3.9651 ms]
+  allocs: 63480 bytes / 116 allocs
 
 2. Non-Uniform Workload/Base Scope Chunks
   time:   [7.5621 ms 7.8265 ms 8.1040 ms]
+  allocs: 552 bytes / 13 allocs
 
 2. Non-Uniform Workload/Rayon par_iter
   time:   [5.2163 ms 5.3629 ms 5.5264 ms]
+  allocs: 63480 bytes / 116 allocs
 ```
 
 - **Uniform:** Manual chunks ~2x faster — no work-stealing overhead.
